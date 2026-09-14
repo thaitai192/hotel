@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quản lý khách sạn</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏨</text></svg>" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ================= MÀN HÌNH ĐĂNG NHẬP ================= -->
+<div class="login-screen" id="loginScreen" hidden>
+  <form class="login-box" id="loginForm">
+    <div class="login-logo">🏨</div>
+    <h1>Quản lý khách sạn</h1>
+    <p class="muted small">Đăng nhập để tiếp tục</p>
+    <label class="field">
+      <span>Tên đăng nhập</span>
+      <input type="text" id="loginUser" autocomplete="username" autocapitalize="none" autocorrect="off" required />
+    </label>
+    <label class="field">
+      <span>Mật khẩu</span>
+      <input type="password" id="loginPass" autocomplete="current-password" required />
+    </label>
+    <p class="form-error" id="loginError" hidden></p>
+    <button type="submit" class="primary-btn login-submit" id="loginSubmit">Đăng nhập</button>
+  </form>
+</div>
+
+<div id="app" hidden>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">🏨</span>
+    <h1 id="hotelTitle">Quản lý khách sạn</h1>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab" data-tab="booking">Đặt phòng</button>
+    <button class="tab active" data-tab="housekeeping">Lễ tân</button>
+    <button class="tab" data-tab="settings">Cài đặt</button>
+  </nav>
+  <div class="account">
+    <span class="who" id="whoAmI"></span>
+    <button class="ghost-btn small" id="logoutBtn">Đăng xuất</button>
+  </div>
+</header>
+
+<main>
+  <!-- ================= TAB ĐẶT PHÒNG ================= -->
+  <section class="view" id="view-booking">
+    <div class="layout">
+      <div class="panel calendar-panel">
+        <div class="month-nav">
+          <button class="icon-btn" id="bkPrev" title="Tháng trước">‹</button>
+          <h2 id="bkMonthLabel">Tháng</h2>
+          <button class="icon-btn" id="bkNext" title="Tháng sau">›</button>
+          <button class="ghost-btn" id="bkToday">Hôm nay</button>
+        </div>
+        <div class="weekdays">
+          <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span class="sun">CN</span>
+        </div>
+        <div class="calendar" id="bkCalendar"></div>
+        <div class="month-booking-summary" id="bkMonthSummary"></div>
+        <div class="legend">
+          <span><i class="dot free"></i> Còn từ 4 phòng</span>
+          <span><i class="dot partial"></i> Còn 2–3 phòng</span>
+          <span><i class="dot full"></i> Còn 0–1 phòng</span>
+        </div>
+      </div>
+
+      <div class="panel detail-panel">
+        <div class="detail-head">
+          <h2 id="bkDayTitle">Chọn một ngày</h2>
+          <button class="primary-btn" id="bkAddBtn" hidden>+ Đặt phòng</button>
+        </div>
+        <div class="muted" id="bkDaySummary">Bấm vào một ngày trên lịch để xem tình trạng từng phòng.</div>
+        <div id="bkRoomList" class="room-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TAB LỄ TÂN ================= -->
+  <section class="view active" id="view-housekeeping">
+    <div class="layout">
+      <div class="panel calendar-panel">
+        <div class="month-nav">
+          <button class="icon-btn" id="hkPrev" title="Tháng trước">‹</button>
+          <h2 id="hkMonthLabel">Tháng</h2>
+          <button class="icon-btn" id="hkNext" title="Tháng sau">›</button>
+          <button class="ghost-btn" id="hkToday">Hôm nay</button>
+        </div>
+        <div class="weekdays">
+          <span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span class="sun">CN</span>
+        </div>
+        <div class="calendar" id="hkCalendar"></div>
+        <div class="legend">
+          <span><i class="dot done"></i> Đã dọn</span>
+          <span><i class="dot paid-dot"></i> Đã trả lương</span>
+        </div>
+        <div class="month-total" id="hkMonthTotal"></div>
+      </div>
+
+      <div class="panel detail-panel">
+        <div class="detail-head">
+          <h2 id="hkDayTitle">Chọn một ngày</h2>
+        </div>
+        <div id="hkForm" hidden>
+          <div class="field-row">
+            <label class="field">
+              <span>Lễ tân trực</span>
+              <select id="hkStaff"></select>
+            </label>
+            <label class="field">
+              <span>Tiền lương ngày</span>
+              <input type="number" id="hkSalary" min="0" step="1000" placeholder="0" />
+            </label>
+          </div>
+          <p class="salary-hint" id="hkSalaryHint"></p>
+
+          <div class="check-group">
+            <div class="check-head">
+              <h3>Phòng đã dọn</h3>
+              <button class="ghost-btn small" data-toggle-all="rooms">Chọn tất cả</button>
+            </div>
+            <div class="check-list" id="hkRooms"></div>
+          </div>
+
+          <div class="check-group">
+            <div class="check-head">
+              <h3>Khu vực chung đã dọn</h3>
+              <button class="ghost-btn small" data-toggle-all="areas">Chọn tất cả</button>
+            </div>
+            <div class="check-list" id="hkAreas"></div>
+          </div>
+
+          <label class="field">
+            <span>Ghi chú</span>
+            <textarea id="hkNote" rows="2" placeholder="Ghi chú công việc trong ngày..."></textarea>
+          </label>
+
+          <label class="paid-toggle">
+            <input type="checkbox" id="hkPaid" />
+            <span>Đã trả lương ngày này</span>
+          </label>
+
+          <div class="form-actions">
+            <button class="primary-btn" id="hkSave">Lưu</button>
+            <span class="save-hint" id="hkSaveHint"></span>
+          </div>
+        </div>
+        <p class="muted" id="hkEmptyHint">Bấm vào một ngày trên lịch để ghi nhận công việc dọn dẹp.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TAB CÀI ĐẶT ================= -->
+  <section class="view" id="view-settings">
+    <div class="panel">
+      <h2>Thông tin chung</h2>
+      <div class="field-row">
+        <label class="field grow">
+          <span>Tên khách sạn</span>
+          <input type="text" id="setHotelName" placeholder="Khách sạn..." />
+        </label>
+        <label class="field">
+          <span>Đơn giá dọn mỗi mục (VND)</span>
+          <input type="number" id="setCleaningRate" min="0" step="1000" placeholder="50000" />
+        </label>
+        <button class="primary-btn" id="setSaveName">Lưu</button>
+      </div>
+      <p class="muted small">Tiền lương ngày của lễ tân được tự tính bằng
+        <b>(số phòng đã dọn + số khu vực chung đã dọn) × đơn giá này</b>, và vẫn sửa tay được ở từng ngày.</p>
+    </div>
+
+    <div class="panel">
+      <h2>Danh sách phòng</h2>
+      <div class="field-row generator">
+        <label class="field">
+          <span>Số lượng phòng</span>
+          <input type="number" id="roomCount" min="1" max="500" placeholder="10" />
+        </label>
+        <label class="field">
+          <span>Tên bắt đầu từ</span>
+          <input type="text" id="roomPrefix" placeholder="Phòng 101" value="Phòng 101" />
+        </label>
+        <button class="ghost-btn" id="genRooms">Tạo danh sách</button>
+      </div>
+      <p class="muted small">Tạo nhanh danh sách rồi sửa lại tên từng phòng bên dưới. Ví dụ “Phòng 101” sẽ tạo 101, 102, 103…</p>
+
+      <table class="edit-table">
+        <thead>
+          <tr><th style="width:34px"></th><th>Tên phòng</th><th style="width:150px">Loại phòng</th><th style="width:140px">Giá mặc định</th><th style="width:44px"></th></tr>
+        </thead>
+        <tbody id="roomRows"></tbody>
+      </table>
+      <div class="form-actions">
+        <button class="ghost-btn" id="addRoom">+ Thêm phòng</button>
+        <button class="primary-btn" id="saveRooms">Lưu danh sách phòng</button>
+        <span class="save-hint" id="roomHint"></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Tài khoản đăng nhập</h2>
+      <p class="muted small">Mỗi người một tài khoản riêng, nghỉ việc thì xoá tài khoản là xong.</p>
+      <table class="edit-table">
+        <thead>
+          <tr><th style="width:34px"></th><th>Tên đăng nhập</th><th>Tên hiển thị</th><th>Vai trò</th><th style="width:44px"></th></tr>
+        </thead>
+        <tbody id="userRows"></tbody>
+      </table>
+
+      <div class="sub-block">
+        <h3>Thêm tài khoản</h3>
+        <button class="ghost-btn" id="showAddUser" type="button">+ Thêm tài khoản</button>
+        <div class="field-row" id="addUserForm" hidden>
+          <label class="field">
+            <span>Tên đăng nhập</span>
+            <input type="text" id="newUsername" autocapitalize="none" />
+          </label>
+          <label class="field">
+            <span>Tên hiển thị</span>
+            <input type="text" id="newDisplayName" />
+          </label>
+          <label class="field">
+            <span>Mật khẩu</span>
+            <input type="password" id="newUserPass" autocomplete="new-password" placeholder="ít nhất 6 ký tự" />
+          </label>
+          <label class="field">
+            <span>Vai trò</span>
+            <select id="newUserRole">
+              <option value="admin">Admin</option>
+              <option value="receptionist">Lễ tân</option>
+              <option value="viewer" selected>Viewer</option>
+            </select>
+          </label>
+          <button class="primary-btn" id="addUser" type="button">Lưu tài khoản</button>
+        </div>
+      </div>
+
+      <div class="sub-block">
+        <h3>Đổi mật khẩu của tôi</h3>
+        <div class="field-row">
+          <label class="field">
+            <span>Mật khẩu hiện tại</span>
+            <input type="password" id="curPass" autocomplete="current-password" />
+          </label>
+          <label class="field">
+            <span>Mật khẩu mới</span>
+            <input type="password" id="newPass" autocomplete="new-password" placeholder="ít nhất 6 ký tự" />
+          </label>
+          <button class="primary-btn" id="changePass">Đổi mật khẩu</button>
+        </div>
+        <p class="muted small">Đổi xong, các thiết bị khác đang đăng nhập bằng tài khoản này sẽ bị đăng xuất.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Danh sách lễ tân</h2>
+      <p class="muted small">Những người này sẽ hiện trong ô “Lễ tân trực” ở tab Lễ tân.</p>
+      <table class="edit-table">
+        <thead>
+          <tr><th style="width:34px"></th><th>Tên lễ tân</th><th style="width:180px">Số điện thoại</th><th>Ghi chú</th><th style="width:44px"></th></tr>
+        </thead>
+        <tbody id="staffRows"></tbody>
+      </table>
+      <div class="form-actions">
+        <button class="ghost-btn" id="addStaff">+ Thêm lễ tân</button>
+        <button class="primary-btn" id="saveStaff">Lưu danh sách lễ tân</button>
+        <span class="save-hint" id="staffHint"></span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Khu vực chung</h2>
+      <p class="muted small">Nhà xe, hành lang tầng 1, sảnh, thang máy, sân thượng…</p>
+      <table class="edit-table">
+        <thead>
+          <tr><th style="width:34px"></th><th>Tên khu vực</th><th>Ghi chú</th><th style="width:44px"></th></tr>
+        </thead>
+        <tbody id="areaRows"></tbody>
+      </table>
+      <div class="form-actions">
+        <button class="ghost-btn" id="addArea">+ Thêm khu vực</button>
+        <button class="primary-btn" id="saveAreas">Lưu khu vực</button>
+        <span class="save-hint" id="areaHint"></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ================= MODAL ĐẶT PHÒNG ================= -->
+<div class="modal-backdrop" id="modal" hidden>
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modalTitle">Đặt phòng</h2>
+      <button class="icon-btn" id="modalClose">✕</button>
+    </div>
+    <form id="bookingForm">
+      <div class="field-row">
+        <label class="field grow">
+          <span>Phòng *</span>
+          <select id="fRoom" required></select>
+        </label>
+      </div>
+      <div class="field-row">
+        <label class="field">
+          <span>Ngày nhận phòng *</span>
+          <input type="date" id="fFrom" required />
+        </label>
+        <label class="field">
+          <span>Ngày trả phòng *</span>
+          <input type="date" id="fTo" required />
+        </label>
+      </div>
+      <div class="field-row">
+        <label class="field">
+          <span>Giờ check-in</span>
+          <input type="time" id="fCheckin" />
+        </label>
+        <label class="field">
+          <span>Giờ check-out</span>
+          <input type="time" id="fCheckout" />
+        </label>
+      </div>
+      <div class="field-row">
+        <label class="field">
+          <span>Tổng tiền (VND)</span>
+          <input type="number" id="fPrice" min="0" step="1000" placeholder="0" />
+        </label>
+        <label class="field">
+          <span>Đã cọc (VND)</span>
+          <input type="number" id="fDeposit" min="0" step="1000" placeholder="0" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Đã thanh toán tới ngày</span>
+        <input type="date" id="fPaidUntil" />
+      </label>
+      <div class="field-row">
+        <label class="field">
+          <span>Tên khách</span>
+          <input type="text" id="fName" placeholder="Nguyễn Văn A" />
+        </label>
+        <label class="field">
+          <span>Số điện thoại</span>
+          <input type="tel" id="fPhone" placeholder="09xx xxx xxx" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Ghi chú</span>
+        <textarea id="fNote" rows="2"></textarea>
+      </label>
+      <p class="nights-hint" id="nightsHint"></p>
+      <p class="form-error" id="formError" hidden></p>
+
+      <div class="modal-actions">
+        <button type="button" class="danger-btn" id="deleteBooking" hidden>Xoá</button>
+        <span class="spacer"></span>
+        <button type="button" class="ghost-btn" id="cancelBooking">Huỷ</button>
+        <button type="submit" class="primary-btn" id="saveBooking">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+</div><!-- /#app -->
+
+<script src="app.js"></script>
+</body>
+</html>

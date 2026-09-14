@@ -1,0 +1,428 @@
+:root {
+  --bg: #f4f6fa;
+  --panel: #ffffff;
+  --ink: #1d2433;
+  --ink-soft: #667085;
+  --line: #e3e8f0;
+  --brand: #2f6fed;
+  --brand-dark: #2558c4;
+  --free: #2fa36b;
+  --partial: #e0962c;
+  --full: #d9534f;
+  --paid-bg: #d7dbe2;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 8px 24px rgba(16, 24, 40, .06);
+}
+
+* { box-sizing: border-box; }
+
+/* Bất kỳ quy tắc display nào bên dưới (ví dụ .modal-backdrop{display:flex})
+   cũng sẽ đè lên [hidden] mặc định của trình duyệt, nên phải khoá lại ở đây. */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 14px;
+}
+
+h1, h2, h3 { margin: 0; font-weight: 650; }
+h1 { font-size: 18px; }
+h2 { font-size: 16px; }
+h3 { font-size: 14px; }
+
+/* ---------------- Màn hình đăng nhập ---------------- */
+.login-screen {
+  min-height: 100vh; min-height: 100dvh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 16px;
+  background: linear-gradient(160deg, #eef2fa 0%, #f7f9fc 60%);
+}
+.login-box {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(16, 24, 40, .1);
+  padding: 28px 24px 24px; width: 100%; max-width: 380px;
+}
+.login-logo { font-size: 40px; text-align: center; line-height: 1; }
+.login-box h1 { text-align: center; font-size: 19px; margin: 10px 0 2px; }
+.login-box > .muted { text-align: center; margin: 0 0 20px; }
+.login-submit { width: 100%; padding: 12px; font-size: 15px; margin-top: 4px; }
+
+/* ---------------- Topbar ---------------- */
+.account { display: flex; align-items: center; gap: 10px; }
+.who { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+
+.sub-block { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); }
+.sub-block h3 { margin-bottom: 10px; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo { font-size: 22px; }
+
+.tabs { display: flex; gap: 4px; background: #eef1f6; padding: 4px; border-radius: 10px; }
+.tab {
+  border: 0; background: transparent; padding: 8px 18px; border-radius: 8px;
+  font: inherit; font-weight: 600; color: var(--ink-soft); cursor: pointer;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { background: var(--panel); color: var(--brand); box-shadow: 0 1px 3px rgba(16,24,40,.12); }
+
+main { padding: 20px; max-width: 1400px; margin: 0 auto; }
+.view { display: none; }
+.view.active { display: block; }
+
+.layout { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 1000px) { .layout { grid-template-columns: 1fr; } }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* ---------------- Buttons ---------------- */
+button { font: inherit; }
+.primary-btn {
+  background: var(--brand); color: #fff; border: 0; padding: 9px 16px;
+  border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.primary-btn:hover { background: var(--brand-dark); }
+.ghost-btn {
+  background: #fff; color: var(--ink); border: 1px solid var(--line);
+  padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.ghost-btn:hover { border-color: #c3ccdb; background: #f8fafc; }
+.ghost-btn.small { padding: 4px 10px; font-size: 12px; font-weight: 500; }
+.danger-btn {
+  background: #fff; color: var(--full); border: 1px solid #f0c4c2;
+  padding: 8px 14px; border-radius: 8px; font-weight: 600; cursor: pointer;
+}
+.danger-btn:hover { background: #fdf3f3; }
+.icon-btn {
+  background: #fff; border: 1px solid var(--line); width: 32px; height: 32px;
+  border-radius: 8px; cursor: pointer; font-size: 18px; line-height: 1; color: var(--ink-soft);
+}
+.icon-btn:hover { background: #f1f4f9; color: var(--ink); }
+
+/* ---------------- Calendar ---------------- */
+.month-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.month-nav h2 { min-width: 150px; text-align: center; }
+.month-nav .ghost-btn { margin-left: auto; }
+
+.weekdays {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;
+  font-size: 12px; font-weight: 600; color: var(--ink-soft); text-align: center; margin-bottom: 6px;
+}
+.weekdays .sun { color: var(--full); }
+
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+
+.day {
+  position: relative;
+  min-height: 78px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  padding: 6px 7px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: border-color .12s, box-shadow .12s;
+}
+.day:hover { border-color: var(--brand); }
+.day.outside { background: #fafbfd; opacity: .5; }
+.day.status-free { background: #edf8f1; }
+.day.status-partial { background: #fff7e8; }
+.day.status-full { background: #fff0ef; }
+.day.today .day-num { background: var(--brand); color: #fff; }
+.day.selected { border-color: var(--brand); box-shadow: 0 0 0 2px rgba(47,111,237,.25); }
+.day.paid-day { background: var(--paid-bg); }
+.day.paid-day .day-num { color: #4a5160; }
+
+.day-num {
+  font-weight: 650; font-size: 13px; width: 22px; height: 22px;
+  display: inline-flex; align-items: center; justify-content: center; border-radius: 999px;
+}
+.day-badge {
+  font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 999px;
+  align-self: flex-start; color: #fff;
+}
+.badge-free { background: var(--free); }
+.badge-partial { background: var(--partial); }
+.badge-full { background: var(--full); }
+.badge-done { background: var(--free); }
+.badge-none { background: #aeb6c4; }
+.day-sub { font-size: 11px; color: var(--ink-soft); line-height: 1.3; }
+.day-flag { font-size: 11px; font-weight: 600; color: #4a5160; }
+
+.bar { height: 4px; border-radius: 3px; background: #edf0f5; overflow: hidden; margin-top: auto; }
+.bar > i { display: block; height: 100%; background: var(--brand); }
+
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 14px; font-size: 12px; color: var(--ink-soft); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+.dot.free { background: var(--free); }
+.dot.partial { background: var(--partial); }
+.dot.full { background: var(--full); }
+.dot.done { background: var(--free); }
+.dot.paid-dot { background: var(--paid-bg); border: 1px solid #c3c9d3; }
+
+.month-total {
+  margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line);
+  font-size: 13px; color: var(--ink-soft);
+}
+.month-total b { color: var(--ink); }
+
+/* ---------------- Detail panel ---------------- */
+.detail-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.muted { color: var(--ink-soft); }
+.muted.small, .small { font-size: 12px; }
+
+.room-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.room-card {
+  border: 1px solid var(--line); border-left: 4px solid var(--free);
+  border-radius: 10px; padding: 10px 12px; background: #fff;
+}
+.room-card.occupied { border-left-color: var(--full); background: #fff0ef; cursor: pointer; }
+.room-card.occupied.paid { border-left-color: var(--free); background: #edf8f1; }
+.room-card.occupied:hover { border-color: #f0c4c2; }
+.room-card.occupied.paid:hover { border-color: #b7e3cd; }
+.room-card.vacant { border-left-color: var(--free); }
+.room-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.room-name { font-weight: 650; }
+.status-pill { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; }
+.status-pill.vacant { background: #e6f6ee; color: var(--free); }
+.status-pill.occupied { background: #fdecea; color: var(--full); }
+.room-meta { margin-top: 6px; font-size: 12.5px; color: var(--ink-soft); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.room-meta b { color: var(--ink); font-weight: 600; }
+.room-note { margin-top: 4px; font-size: 12px; color: var(--ink-soft); font-style: italic; }
+.tag { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: #eef1f6; color: var(--ink-soft); }
+.tag.in { background: #e7f0ff; color: var(--brand); }
+.tag.out { background: #fff2e0; color: #b5730f; }
+.tag.paid { background: #e6f6ee; color: var(--free); }
+
+.day-summary-box {
+  display: flex; gap: 16px; flex-wrap: wrap; padding: 10px 12px; background: #f7f9fc;
+  border-radius: 10px; font-size: 13px; margin-top: 4px;
+}
+.day-summary-box b { font-size: 15px; display: block; }
+
+.month-booking-summary {
+  display: flex; gap: 24px; flex-wrap: wrap; margin-top: 12px; padding: 10px 12px;
+  border-top: 1px solid var(--line); color: var(--ink-soft); font-size: 13px;
+}
+.month-booking-summary > div { min-width: 120px; }
+.month-booking-summary b { display: block; color: var(--ink); font-size: 16px; }
+
+/* ---------------- Forms ---------------- */
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.field > span { font-size: 12px; font-weight: 600; color: var(--ink-soft); }
+.field.grow { flex: 1; }
+.field-row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; }
+.field-row > .field { flex: 1; min-width: 140px; }
+.field-row > button { margin-bottom: 12px; }
+/* Hàng tạo nhanh danh sách phòng: không để ô nhập giãn hết chiều ngang */
+.generator > .field { flex: 0 1 200px; }
+
+input[type=text], input[type=number], input[type=date], input[type=time],
+input[type=tel], input[type=password], select, textarea {
+  font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px;
+  background: #fff; color: var(--ink); width: 100%;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid rgba(47,111,237,.3); border-color: var(--brand); }
+textarea { resize: vertical; }
+
+.check-group { margin-bottom: 14px; }
+.check-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.check-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(178px, 1fr)); gap: 6px; }
+.check-item {
+  display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+  border: 1px solid var(--line); border-radius: 8px; cursor: pointer; background: #fff;
+}
+/* Tên mục chiếm phần còn lại, nhãn "có khách" bám mép phải và không xuống dòng */
+.check-item > span:first-of-type { flex: 1; min-width: 0; }
+.check-item .tag { margin-left: auto; white-space: nowrap; }
+.check-item:hover { background: #f8fafc; }
+.check-item input { margin: 0; width: 15px; height: 15px; accent-color: var(--brand); }
+.check-item.checked { background: #edfaf3; border-color: #b7e3cd; }
+.check-list:empty::after { content: "Chưa có mục nào — thêm ở tab Cài đặt."; color: var(--ink-soft); font-size: 12px; }
+
+.paid-toggle {
+  display: flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 8px;
+  background: #f7f9fc; border: 1px solid var(--line); cursor: pointer; font-weight: 600; margin-bottom: 12px;
+}
+.paid-toggle input { width: 16px; height: 16px; accent-color: var(--brand); }
+
+.salary-hint {
+  margin: -6px 0 12px; font-size: 12px; color: var(--free); font-weight: 600;
+}
+.salary-hint.manual { color: var(--partial); font-weight: 500; }
+.link-btn {
+  background: none; border: 0; padding: 0 2px; color: var(--brand);
+  font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer;
+}
+.link-btn:hover { color: var(--brand-dark); }
+
+.form-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.save-hint { font-size: 12px; color: var(--free); font-weight: 600; }
+.form-error { color: var(--full); font-size: 13px; background: #fdecea; padding: 8px 10px; border-radius: 8px; }
+.nights-hint { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 10px; }
+
+/* ---------------- Tables ---------------- */
+.edit-table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; }
+.edit-table th {
+  text-align: left; font-size: 12px; color: var(--ink-soft); font-weight: 600;
+  padding: 6px 8px; border-bottom: 1px solid var(--line);
+}
+.edit-table td { padding: 4px 6px; border-bottom: 1px solid #f1f4f9; }
+.edit-table .idx { color: var(--ink-soft); font-size: 12px; text-align: center; }
+.edit-table tbody:empty { display: none; }
+.row-del {
+  border: 0; background: transparent; color: var(--ink-soft); cursor: pointer;
+  font-size: 16px; padding: 4px 6px; border-radius: 6px;
+}
+.row-del:hover { background: #fdecea; color: var(--full); }
+
+/* ---------------- Modal ---------------- */
+.modal-backdrop {
+  position: fixed; inset: 0; background: rgba(16,24,40,.45);
+  display: flex; align-items: flex-start; justify-content: center; padding: 40px 16px; z-index: 50; overflow: auto;
+}
+.modal {
+  background: var(--panel); border-radius: 14px; width: 100%; max-width: 560px;
+  box-shadow: 0 20px 50px rgba(16,24,40,.25); padding: 18px 20px 20px;
+}
+.modal-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.modal-actions { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+.modal-actions .spacer { flex: 1; }
+
+/* ---------------- Toast ---------------- */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #1d2433; color: #fff; padding: 10px 18px; border-radius: 999px;
+  font-size: 13px; font-weight: 600; z-index: 100; box-shadow: var(--shadow);
+}
+.toast.error { background: var(--full); }
+
+/* =====================================================================
+   ĐIỆN THOẠI & MÁY TÍNH BẢNG
+   ===================================================================== */
+
+/* Tablet dọc trở xuống: hai cột thành một cột */
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  body { font-size: 15px; }
+  main { padding: 12px 12px 32px; }
+  .panel { padding: 14px 12px; margin-bottom: 12px; }
+
+  /* --- Thanh trên cùng: tên khách sạn một dòng, tab trải hết bề ngang --- */
+  .topbar { padding: 10px 12px; gap: 8px; }
+  h1 { font-size: 16px; }
+  .logo { font-size: 20px; }
+  .tabs { width: 100%; order: 3; }
+  .tab { flex: 1; padding: 11px 4px; font-size: 14px; }
+  .account { margin-left: auto; }
+  .who { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .login-box { padding: 22px 18px 20px; }
+
+  /* --- Lịch tháng: ô nhỏ lại, bỏ bớt chữ phụ cho dễ đọc --- */
+  .calendar, .weekdays { gap: 4px; }
+  .weekdays { font-size: 11px; }
+  .day { min-height: 62px; padding: 5px 4px; border-radius: 8px; gap: 3px; }
+  .day-num { font-size: 12px; width: 21px; height: 21px; }
+  .day-badge { font-size: 10px; padding: 1px 5px; }
+  .day-sub { display: none; }          /* "còn 5 phòng" — quá nhỏ để đọc trên điện thoại */
+  .day-flag { font-size: 9px; }
+  .month-nav h2 { min-width: 0; flex: 1; font-size: 15px; }
+  .legend { gap: 10px; font-size: 11px; }
+
+  /* --- Biểu mẫu: xếp dọc, chữ 16px để iPhone không tự phóng to khi gõ --- */
+  input[type=text], input[type=number], input[type=date], input[type=time],
+  input[type=tel], input[type=password], select, textarea { font-size: 16px; padding: 10px; }
+  .field-row { flex-direction: column; align-items: stretch; gap: 0; }
+  .field-row > button { margin-bottom: 12px; width: 100%; }
+  .generator > .field { flex: 1 1 auto; }
+  .check-list { grid-template-columns: 1fr; }
+  .check-item { padding: 10px 12px; }        /* vùng chạm rộng hơn */
+  .check-item input { width: 18px; height: 18px; }
+  .paid-toggle { padding: 12px; }
+  .form-actions { gap: 8px; }
+  .form-actions .primary-btn, .form-actions .ghost-btn { flex: 1; padding: 11px 12px; }
+
+  /* --- Nút bấm to hơn cho ngón tay --- */
+  .icon-btn { width: 40px; height: 40px; font-size: 20px; }
+  .ghost-btn, .primary-btn, .danger-btn { padding: 10px 14px; }
+
+  /* --- Bảng ở tab Cài đặt: mỗi dòng thành một thẻ có nhãn --- */
+  .edit-table thead { display: none; }
+  .edit-table, .edit-table tbody, .edit-table tr, .edit-table td { display: block; width: 100%; }
+  .edit-table tr {
+    position: relative;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 30px 10px 10px; margin-bottom: 10px; background: #fcfdff;
+  }
+  .edit-table td { padding: 4px 0; border: 0; }
+  .edit-table td::before {
+    content: attr(data-label);
+    display: block; font-size: 11px; font-weight: 600;
+    color: var(--ink-soft); margin-bottom: 3px;
+  }
+  .edit-table td.idx {
+    position: absolute; top: 7px; left: 11px; width: auto;
+    font-weight: 700; color: var(--ink-soft); font-size: 12px;
+  }
+  .edit-table td:last-child { position: absolute; top: 2px; right: 4px; width: auto; padding: 0; }
+  .edit-table td.idx::before, .edit-table td:last-child::before { content: none; }
+  .row-del { font-size: 20px; padding: 6px 10px; }
+
+  /* --- Chi tiết ngày --- */
+  .detail-head { flex-wrap: wrap; }
+  .day-summary-box { gap: 8px 14px; padding: 10px; font-size: 12px; }
+  .day-summary-box b { font-size: 16px; }
+  .month-booking-summary { gap: 8px 14px; padding: 10px; font-size: 12px; }
+  .month-booking-summary b { font-size: 16px; }
+  .room-meta { gap: 3px 10px; font-size: 12px; }
+
+  /* --- Hộp thoại đặt phòng: gần như toàn màn hình --- */
+  .modal-backdrop { padding: 10px; }
+  .modal { padding: 14px; border-radius: 12px; }
+  .modal-actions { flex-wrap: wrap; }
+  .modal-actions .spacer { display: none; }
+  .modal-actions .primary-btn, .modal-actions .ghost-btn { flex: 1; padding: 12px; }
+  .modal-actions .danger-btn { width: 100%; order: 3; }
+
+  .toast { bottom: 16px; width: max-content; max-width: calc(100vw - 32px); text-align: center; }
+}
+
+/* Điện thoại nhỏ (iPhone SE ~375px) */
+@media (max-width: 400px) {
+  main { padding: 10px 8px 28px; }
+  .panel { padding: 12px 10px; }
+  .calendar, .weekdays { gap: 3px; }
+  .day { min-height: 56px; padding: 4px 2px; }
+  .day-num { font-size: 11px; width: 19px; height: 19px; }
+  .day-badge { font-size: 9px; padding: 1px 4px; }
+  .day-flag { display: none; }
+  .tab { font-size: 13px; padding: 10px 2px; }
+}
