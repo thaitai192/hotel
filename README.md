@@ -35,6 +35,40 @@ Lần chạy đầu tiên app sẽ **tự tạo database `hotel` và toàn bộ 
 
 Đổi cổng web: `PORT=8080 npm start`
 
+### Tự chạy lại sau khi khởi động Windows hoặc VS Code bị đóng
+
+Trên Windows, mở PowerShell tại thư mục dự án và chạy một lần:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\install-windows-task.ps1
+```
+
+Lệnh này tạo hai shortcut `HotelAppServer` và `HotelAppTunnel` trong thư mục Startup. Server chạy độc lập với VS Code, còn tunnel Cloudflare tự thử kết nối lại sau 5 giây nếu bị mất. Sau khi cài, có thể đóng VS Code; web vẫn chạy tại `http://localhost:3000` và `https://thefhouse.top`. Khi máy khởi động lại, sau khi đăng nhập Windows cả app và tunnel sẽ tự chạy.
+
+### Cập nhật code lên web đang chạy
+
+- Sửa `public/index.html`, `public/app.js` hoặc `public/styles.css`: lưu file rồi tải lại trang bằng `Ctrl+F5`.
+- Sửa `server.js`, `db.js`, `auth.js` hoặc code backend: sau khi lưu, chạy PowerShell:
+
+```powershell
+$serverPid = (Get-NetTCPConnection -LocalPort 3000 -State Listen).OwningProcess
+Stop-Process -Id $serverPid -Force
+```
+
+Watcher sẽ tự khởi động lại Node trong khoảng 5 giây. Sau đó tải lại `https://thefhouse.top`. Tunnel không cần restart khi chỉ cập nhật code app.
+
+Kiểm tra shortcut tự chạy:
+
+```powershell
+Test-Path (Join-Path ([Environment]::GetFolderPath('Startup')) 'HotelAppServer.lnk')
+```
+
+Gỡ tự chạy:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\uninstall-windows-task.ps1
+```
+
 ---
 
 ## Cấu hình kết nối database

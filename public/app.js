@@ -95,7 +95,18 @@ async function api(method, url, body) {
     body: body ? JSON.stringify(body) : undefined,
   });
   const text = await res.text();
-  const json = text ? JSON.parse(text) : {};
+  let json = {};
+  if (text) {
+    try {
+      json = JSON.parse(text);
+    } catch {
+      throw new Error(
+        res.headers.get('content-type')?.includes('text/html')
+          ? 'Trang đang chạy không phải từ máy chủ ứng dụng. Hãy mở http://localhost:3000/login'
+          : 'Máy chủ trả về dữ liệu không hợp lệ'
+      );
+    }
+  }
   if (res.status === 401 && url !== '/api/login' && url !== '/api/me') {
     // Phiên hết hạn giữa chừng — quay về màn hình đăng nhập
     showLogin();
